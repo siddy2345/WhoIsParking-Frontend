@@ -1062,6 +1062,229 @@ export class IdentityClient {
 @Injectable({
   providedIn: 'root',
 })
+export class HouseClient {
+  private http: HttpClient;
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+    undefined;
+
+  constructor(
+    @Inject(HttpClient) http: HttpClient,
+    @Optional() @Inject(API_BASE_URL) baseUrl?: string
+  ) {
+    this.http = http;
+    this.baseUrl = baseUrl ?? '';
+  }
+
+  /**
+   * @return OK
+   */
+  houseGet(): Observable<HouseViewModel[]> {
+    let url_ = this.baseUrl + '/api/House';
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processHouseGet(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processHouseGet(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<HouseViewModel[]>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<
+              HouseViewModel[]
+            >;
+        })
+      );
+  }
+
+  protected processHouseGet(
+    response: HttpResponseBase
+  ): Observable<HouseViewModel[]> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+            result200 = [] as any;
+            for (let item of resultData200)
+              result200!.push(HouseViewModel.fromJS(item));
+          } else {
+            result200 = <any>null;
+          }
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 401) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'Unauthorized',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    } else if (status === 403) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException('Forbidden', status, _responseText, _headers);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  housePost(body: HouseModel): Observable<number> {
+    let url_ = this.baseUrl + '/api/House';
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('post', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processHousePost(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processHousePost(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<number>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<number>;
+        })
+      );
+  }
+
+  protected processHousePost(response: HttpResponseBase): Observable<number> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 401) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'Unauthorized',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    } else if (status === 403) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException('Forbidden', status, _responseText, _headers);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+}
+
+@Injectable({
+  providedIn: 'root',
+})
 export class ParkedCarClient {
   private http: HttpClient;
   private baseUrl: string;
@@ -1353,6 +1576,102 @@ export class ForgotPasswordRequest implements IForgotPasswordRequest {
 
 export interface IForgotPasswordRequest {
   email: string | undefined;
+}
+
+export class HouseModel implements IHouseModel {
+  houseId?: number;
+  street!: string;
+  number!: string;
+  zip!: number;
+  city!: string;
+
+  constructor(data?: IHouseModel) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.houseId = _data['houseId'];
+      this.street = _data['street'];
+      this.number = _data['number'];
+      this.zip = _data['zip'];
+      this.city = _data['city'];
+    }
+  }
+
+  static fromJS(data: any): HouseModel {
+    data = typeof data === 'object' ? data : {};
+    let result = new HouseModel();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['houseId'] = this.houseId;
+    data['street'] = this.street;
+    data['number'] = this.number;
+    data['zip'] = this.zip;
+    data['city'] = this.city;
+    return data;
+  }
+}
+
+export interface IHouseModel {
+  houseId?: number;
+  street: string;
+  number: string;
+  zip: number;
+  city: string;
+}
+
+export class HouseViewModel implements IHouseViewModel {
+  houseId?: number;
+  street?: string | undefined;
+  number?: string | undefined;
+
+  constructor(data?: IHouseViewModel) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.houseId = _data['houseId'];
+      this.street = _data['street'];
+      this.number = _data['number'];
+    }
+  }
+
+  static fromJS(data: any): HouseViewModel {
+    data = typeof data === 'object' ? data : {};
+    let result = new HouseViewModel();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data['houseId'] = this.houseId;
+    data['street'] = this.street;
+    data['number'] = this.number;
+    return data;
+  }
+}
+
+export interface IHouseViewModel {
+  houseId?: number;
+  street?: string | undefined;
+  number?: string | undefined;
 }
 
 export class HttpValidationProblemDetails

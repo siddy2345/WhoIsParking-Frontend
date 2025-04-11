@@ -1,16 +1,57 @@
+@if(searchModel$ | async; as searchModel) {
 <section class="filter">
   <header>
     <label for="date-from">Datum von</label>
-    <input id="date-from" type="date" required />
+    <input
+      #dateFrom
+      id="date-from"
+      type="date"
+      required
+      [(ngModel)]="searchModel.dateFrom"
+    />
   </header>
   <header>
     <label for="date-to">Datum bis</label>
-    <input id="date-to" type="date" required />
+    <input
+      #dateTo
+      id="date-to"
+      type="date"
+      required
+      [(ngModel)]="searchModel.dateTo"
+    />
   </header>
   <header>
     <label for="houses">Haus</label>
-    <select required name="houses" id="houses">
-      <option value="1">Faulenbachweg 28b</option>
+    <select
+      [(ngModel)]="searchModel.houseId"
+      #houseSelection
+      required
+      name="houses"
+      id="houses"
+    >
+      @for (house of houses$ | async; track $index) {
+      <option [value]="house.houseId">
+        {{ house.street }} {{ house.number }}
+      </option>
+      }
     </select>
   </header>
+
+  <header>
+    <button
+      type="button"
+      [disabled]="!isSearchModelValid()"
+      (click)="onSearchCars()"
+    >
+      Suchen
+    </button>
+  </header>
 </section>
+
+<section class="cars">
+  @for (car of cars$ | async; track $index) {
+  {{ car.numberPlate }}
+  }
+</section>
+
+}
