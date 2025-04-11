@@ -1,7 +1,8 @@
 <form [formGroup]="userReactiveForm" class="form">
-  <div>
+  <section>
     <label for="email">Email</label>
     <input
+      required
       id="email"
       type="email"
       placeholder="john.doe@provider.com"
@@ -9,42 +10,45 @@
     />
     @if (userReactiveForm.controls.email.hasError('email') &&
     !userReactiveForm.controls.email.hasError('required')) {
-    <p>Please enter a valid email address</p>
+    <p>Bitte eine valide Email angeben</p>
     } @if (userReactiveForm.controls.email.hasError('required')) {
-    <p>Email is <strong>required</strong></p>
+    <p>Email ist <strong>obligatorisch</strong></p>
     }
 
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password" />
+    <input required id="password" type="password" formControlName="password" />
     @if (userReactiveForm.controls.password.hasError('pattern') &&
     !userReactiveForm.controls.password.hasError('required')) {
     <!-- FIXME: describe password rules -->
-    <p>Please enter a valid password.</p>
+    <p>Bitte ein valides Passwort eingeben</p>
     } @if (userReactiveForm.controls.password.hasError('required')) {
-    <p>Password is <strong>required</strong></p>
+    <p>Passwort ist <strong>obligatorisch</strong></p>
     }
-  </div>
-  <div>
+  </section>
+  <section>
     <label for="register">Account erstellen</label>
     <input
       id="register"
       type="radio"
+      name="auth"
       (change)="onChangeAccProcessOption(accountProcessOptions.Register)"
     />
 
     <label for="login">Account vorhanden</label>
     <input
+      checked
       id="login"
       type="radio"
+      name="auth"
       (change)="onChangeAccProcessOption(accountProcessOptions.Login)"
     />
-  </div>
+  </section>
 
-  <div>
+  <section>
     @if (accountProcessOptionsSig() === accountProcessOptions.Login) {
     <button (click)="onLogin()">Login</button>
     } @else {
     <button (click)="onRegister()">Register</button>
     }
-  </div>
+  </section>
 </form>

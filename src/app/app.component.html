@@ -1,7 +1,16 @@
-<a routerLink="" (click)="onNavigateRoute('')">Home</a>
-<br />
-<a routerLink="login">Login</a>
-<br />
-<a routerLink="dashboard" (click)="onNavigateRoute('dashboard')">Dashboard</a>
+<nav>
+  <ul>
+    <li>
+      <a routerLink="" (click)="onNavigateRoute('')">Home</a>
+    </li>
+    <li>
+      <a routerLink="dashboard" (click)="onNavigateRoute('dashboard')"
+        >Dashboard</a
+      >
+    </li>
+  </ul>
+</nav>
+
+<!-- <a routerLink="login">Login</a> -->
 
 <router-outlet />
