@@ -1,7 +1,7 @@
-<a routerLink="">Home</a>
+<a routerLink="" (click)="onNavigateRoute('')">Home</a>
 <br />
 <a routerLink="login">Login</a>
 <br />
-<a routerLink="dashboard">Dashboard</a>
+<a routerLink="dashboard" (click)="onNavigateRoute('dashboard')">Dashboard</a>
 
 <router-outlet />

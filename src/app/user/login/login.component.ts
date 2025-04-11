@@ -47,27 +47,15 @@ export class LoginComponent implements OnInit {
   private readonly identityService = inject(IdentityClient);
   private readonly authEventService = inject(AuthEventService);
   private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
 
   public ngOnInit(): void {
     const authToken = localStorage.getItem(AUTH_TOKEN_LOCAL_STORAGE);
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_LOCAL_STORAGE);
 
-    // this.authEventService.shouldRefreshToken$
-    //   .pipe(take(1), takeUntilDestroyed(this.destroyRef))
-    //   .subscribe(() => {
-    //     const currentRefreshToken = localStorage.getItem(
-    //       REFRESH_TOKEN_LOCAL_STORAGE
-    //     );
-    //     if (currentRefreshToken) this.onRefresh(currentRefreshToken);
-    //   });
-
     if (
       (authToken !== null && refreshToken !== null) ||
       refreshToken !== null
     ) {
-      console.log(this.authEventService.desiredRouteSig());
-
       this.router.navigate([`${this.authEventService.desiredRouteSig()}`]);
     }
   }
@@ -100,7 +88,7 @@ export class LoginComponent implements OnInit {
         .subscribe({
           next: (tokenResponse) => {
             this.handleTokenResponse(tokenResponse);
-            // this.router.navigate(['dashboard']); FIXME
+            this.router.navigate([this.authEventService.desiredRouteSig()]);
           },
           error: (err) => {
             console.log(err); //FIXME: do better
@@ -114,20 +102,6 @@ export class LoginComponent implements OnInit {
     accountProcessOption === AccountProcessOption.Login
       ? this.accountProcessOptionsSig.set(AccountProcessOption.Login)
       : this.accountProcessOptionsSig.set(AccountProcessOption.Register);
-  }
-
-  private onRefresh(refreshToken: string): void {
-    localStorage.removeItem(AUTH_TOKEN_LOCAL_STORAGE);
-    localStorage.removeItem(REFRESH_TOKEN_LOCAL_STORAGE);
-
-    this.identityService
-      .refresh(new RefreshRequest({ refreshToken }))
-      .subscribe({
-        next: (tokenResponse) => this.handleTokenResponse(tokenResponse),
-        error: (err) => {
-          console.log(err); //FIXME: do better (never gets here if its a 401, cause interceptor)
-        },
-      });
   }
 
   private handleTokenResponse(tokenResponse: AccessTokenResponse): void {

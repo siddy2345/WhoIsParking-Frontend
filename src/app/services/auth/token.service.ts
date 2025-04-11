@@ -23,17 +23,17 @@ export class TokenService {
     private router: Router
   ) {}
 
-  /** Get the current access token from local storage */
+  /** Get current access token from local storage */
   public getAccessToken(): string | null {
     return localStorage.getItem(AUTH_TOKEN_LOCAL_STORAGE);
   }
 
-  /** Get the current refresh token from local storage */
+  /** Get current refresh token from local storage */
   public getRefreshToken(): string | null {
     return localStorage.getItem(REFRESH_TOKEN_LOCAL_STORAGE);
   }
 
-  /** Refresh the access token using the refresh token */
+  /** Refresh access token using the refresh token */
   public refreshToken(): Observable<AccessTokenResponse> {
     if (!this.refreshObservable) {
       const refreshToken = this.getRefreshToken();
@@ -48,14 +48,14 @@ export class TokenService {
             this.handleTokenResponse(tokenResponse);
           }),
           catchError((err) => {
-            this.clearTokens(); // Clear expired tokens
-            this.router.navigate(['login']); // Redirect to login
+            this.clearTokens(); // clear expired tokens
+            this.router.navigate(['login']); // redirect to login
             return throwError(() => err);
           }),
           finalize(() => {
-            this.refreshObservable = null; // Reset observable after success or failure
+            this.refreshObservable = null; // reset observable after success/failure
           }),
-          share() // Share the observable among multiple subscribers
+          share() // share the observable among multiple subscribers
         );
     }
     return this.refreshObservable;
