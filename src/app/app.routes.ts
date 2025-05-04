@@ -15,4 +15,10 @@ export const routes: Routes = [
         (m) => m.DashboardComponent
       ),
   },
+  {
+    path: 'house',
+    canActivate: [canActivate],
+    loadComponent: () =>
+      import('./house/house.component').then((m) => m.HouseComponent),
+  },
 ];

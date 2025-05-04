@@ -1,0 +1,19 @@
+.qr-button-cell {
+  display: flex;
+  justify-content: center;
+}
+
+.qr-button {
+  padding: 0.25rem;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog {
+  position: fixed;
+  top: 10%;
+}

@@ -31,16 +31,14 @@ export class DashboardComponent implements OnInit {
   private readonly parkedCarService = inject(ParkedCarClient);
 
   public ngOnInit(): void {
-    this.houses$ = this.houseService
-      .houseGet()
-      .pipe(
-        tap((h) =>
-          this.searchModel$.next({
-            ...this.searchModel$.value,
-            houseId: h.at(0)?.houseId,
-          })
-        )
-      );
+    this.houses$ = this.houseService.housesGetAdmin().pipe(
+      tap((h) =>
+        this.searchModel$.next({
+          ...this.searchModel$.value,
+          houseId: h.at(0)?.houseId,
+        })
+      )
+    );
   }
 
   public getDefaultDateFrom(): string {

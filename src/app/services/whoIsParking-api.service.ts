@@ -1079,8 +1079,8 @@ export class HouseClient {
   /**
    * @return OK
    */
-  houseGet(): Observable<HouseViewModel[]> {
-    let url_ = this.baseUrl + '/api/House';
+  housesGetAdmin(): Observable<HouseViewModel[]> {
+    let url_ = this.baseUrl + '/api/houses';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
@@ -1095,14 +1095,14 @@ export class HouseClient {
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processHouseGet(response_);
+          return this.processHousesGetAdmin(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processHouseGet(response_ as any);
+              return this.processHousesGetAdmin(response_ as any);
             } catch (e) {
               return _observableThrow(e) as any as Observable<HouseViewModel[]>;
             }
@@ -1114,7 +1114,7 @@ export class HouseClient {
       );
   }
 
-  protected processHouseGet(
+  protected processHousesGetAdmin(
     response: HttpResponseBase
   ): Observable<HouseViewModel[]> {
     const status = response.status;
@@ -1184,8 +1184,8 @@ export class HouseClient {
   /**
    * @return OK
    */
-  housePost(body: HouseModel): Observable<number> {
-    let url_ = this.baseUrl + '/api/House';
+  housesPost(body: HouseModel): Observable<number> {
+    let url_ = this.baseUrl + '/api/houses';
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(body);
@@ -1204,14 +1204,14 @@ export class HouseClient {
       .request('post', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processHousePost(response_);
+          return this.processHousesPost(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processHousePost(response_ as any);
+              return this.processHousesPost(response_ as any);
             } catch (e) {
               return _observableThrow(e) as any as Observable<number>;
             }
@@ -1221,7 +1221,201 @@ export class HouseClient {
       );
   }
 
-  protected processHousePost(response: HttpResponseBase): Observable<number> {
+  protected processHousesPost(response: HttpResponseBase): Observable<number> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+          return _observableOf(result200);
+        })
+      );
+    } else if (status === 401) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'Unauthorized',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    } else if (status === 403) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException('Forbidden', status, _responseText, _headers);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  housesGet(tenantId: string): Observable<HouseViewModel[]> {
+    let url_ = this.baseUrl + '/api/houses/{tenantId}';
+    if (tenantId === undefined || tenantId === null)
+      throw new Error("The parameter 'tenantId' must be defined.");
+    url_ = url_.replace('{tenantId}', encodeURIComponent('' + tenantId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    let options_: any = {
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('get', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processHousesGet(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processHousesGet(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<HouseViewModel[]>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<
+              HouseViewModel[]
+            >;
+        })
+      );
+  }
+
+  protected processHousesGet(
+    response: HttpResponseBase
+  ): Observable<HouseViewModel[]> {
+    const status = response.status;
+    const responseBlob =
+      response instanceof HttpResponse
+        ? response.body
+        : (response as any).error instanceof Blob
+        ? (response as any).error
+        : undefined;
+
+    let _headers: any = {};
+    if (response.headers) {
+      for (let key of response.headers.keys()) {
+        _headers[key] = response.headers.get(key);
+      }
+    }
+    if (status === 200) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          let result200: any = null;
+          let resultData200 =
+            _responseText === ''
+              ? null
+              : JSON.parse(_responseText, this.jsonParseReviver);
+          if (Array.isArray(resultData200)) {
+            result200 = [] as any;
+            for (let item of resultData200)
+              result200!.push(HouseViewModel.fromJS(item));
+          } else {
+            result200 = <any>null;
+          }
+          return _observableOf(result200);
+        })
+      );
+    } else if (status !== 200 && status !== 204) {
+      return blobToText(responseBlob).pipe(
+        _observableMergeMap((_responseText: string) => {
+          return throwException(
+            'An unexpected server error occurred.',
+            status,
+            _responseText,
+            _headers
+          );
+        })
+      );
+    }
+    return _observableOf(null as any);
+  }
+
+  /**
+   * @return OK
+   */
+  housesPut(houseId: number, body: HouseModel): Observable<number> {
+    let url_ = this.baseUrl + '/api/houses/{houseId}';
+    if (houseId === undefined || houseId === null)
+      throw new Error("The parameter 'houseId' must be defined.");
+    url_ = url_.replace('{houseId}', encodeURIComponent('' + houseId));
+    url_ = url_.replace(/[?&]$/, '');
+
+    const content_ = JSON.stringify(body);
+
+    let options_: any = {
+      body: content_,
+      observe: 'response',
+      responseType: 'blob',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      }),
+    };
+
+    return this.http
+      .request('put', url_, options_)
+      .pipe(
+        _observableMergeMap((response_: any) => {
+          return this.processHousesPut(response_);
+        })
+      )
+      .pipe(
+        _observableCatch((response_: any) => {
+          if (response_ instanceof HttpResponseBase) {
+            try {
+              return this.processHousesPut(response_ as any);
+            } catch (e) {
+              return _observableThrow(e) as any as Observable<number>;
+            }
+          } else
+            return _observableThrow(response_) as any as Observable<number>;
+        })
+      );
+  }
+
+  protected processHousesPut(response: HttpResponseBase): Observable<number> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1302,8 +1496,8 @@ export class ParkedCarClient {
   /**
    * @return OK
    */
-  parkedCar(body: ParkedCarModel): Observable<number> {
-    let url_ = this.baseUrl + '/api/ParkedCar';
+  parkedCars(body: ParkedCarModel): Observable<number> {
+    let url_ = this.baseUrl + '/api/parkedCars';
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(body);
@@ -1322,14 +1516,14 @@ export class ParkedCarClient {
       .request('post', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processParkedCar(response_);
+          return this.processParkedCars(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processParkedCar(response_ as any);
+              return this.processParkedCars(response_ as any);
             } catch (e) {
               return _observableThrow(e) as any as Observable<number>;
             }
@@ -1339,7 +1533,7 @@ export class ParkedCarClient {
       );
   }
 
-  protected processParkedCar(response: HttpResponseBase): Observable<number> {
+  protected processParkedCars(response: HttpResponseBase): Observable<number> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1386,7 +1580,7 @@ export class ParkedCarClient {
    * @return OK
    */
   search(body: ParkedCarSearchModel): Observable<ParkedCarViewModel[]> {
-    let url_ = this.baseUrl + '/api/ParkedCar/search';
+    let url_ = this.baseUrl + '/api/parkedCars/search';
     url_ = url_.replace(/[?&]$/, '');
 
     const content_ = JSON.stringify(body);
