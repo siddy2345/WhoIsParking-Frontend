@@ -13,7 +13,7 @@ export class AppComponent {
 
   private readonly authEventService = inject(AuthEventService);
 
-  // set the desired route to navigate to incase of login retry
+  // set the desired route to navigate to, incase of login retry
   public onNavigateRoute(route: string): void {
     console.log(route);
     this.authEventService.desiredRouteSig.set(route);

@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { QRCodeComponent } from 'angularx-qrcode';
 import jsPDF from 'jspdf';
+import { PARKED_CAR_ROUTE } from '../app.models';
 
 @Component({
   selector: 'app-house',
@@ -33,7 +34,9 @@ export class HouseComponent implements OnInit {
   }
 
   public onGenerateQrCode(houseId: number): void {
-    this.qrCodeData.set(`${houseId}`); //TODO: route of car creation with houseId as url param
+    this.qrCodeData.set(
+      `${window.location.origin}/${PARKED_CAR_ROUTE}/${houseId}`
+    );
     this.openDialog.set(true);
     this.renderer.addClass(document.body, 'dialog-backdrop');
   }
@@ -48,7 +51,7 @@ export class HouseComponent implements OnInit {
     const canvas = qrCode.qrcElement.nativeElement as HTMLDivElement;
     const canvasUrl = canvas.querySelector('canvas')?.toDataURL('image/png');
     if (!canvasUrl) {
-      console.error('canvas url undefined'); //FIXME: error handling
+      throw Error('canvas url undefined'); //FIXME: error handling
     }
 
     const imgWidth = 208;

@@ -1,11 +1,18 @@
 import { Routes } from '@angular/router';
 import { canActivate } from './services/auth/auth.guard';
+import { PARKED_CAR_ROUTE } from './app.models';
 
 export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
       import('./user/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'house',
+    canActivate: [canActivate],
+    loadComponent: () =>
+      import('./house/house.component').then((m) => m.HouseComponent),
   },
   {
     path: 'dashboard',
@@ -16,9 +23,17 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'house',
-    canActivate: [canActivate],
+    path: `${PARKED_CAR_ROUTE}/:houseId`,
     loadComponent: () =>
-      import('./house/house.component').then((m) => m.HouseComponent),
+      import('./parked-car/parked-car.component').then(
+        (m) => m.ParkedCarComponent
+      ),
+  },
+  {
+    path: '**',
+    loadComponent: () =>
+      import(
+        './page-not-found-component/page-not-found-component.component'
+      ).then((m) => m.PageNotFoundComponentComponent),
   },
 ];

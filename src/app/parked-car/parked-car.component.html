@@ -1,0 +1,46 @@
+@if (parkedCarModel$ | async; as car) {
+<form #form="ngForm">
+  <label for="firstname">Vorname</label>
+  <input
+    type="text"
+    name="firstname"
+    id="firstname"
+    required
+    [(ngModel)]="car.firstname"
+  />
+  <label for="lastname">Nachname</label>
+  <input
+    type="text"
+    name="lastname"
+    id="lastname"
+    required
+    [(ngModel)]="car.lastname"
+  />
+  <label for="carBrand">Automarke</label>
+  <input
+    type="text"
+    name="carBrand"
+    id="carBrand"
+    required
+    [(ngModel)]="car.carBrand"
+  />
+  <label for="numberPlate">Kennzeichen</label>
+  <input
+    type="text"
+    name="numberPlate"
+    id="numberPlate"
+    required
+    [(ngModel)]="car.numberPlate"
+  />
+  <label for="arrival">Ankunft</label>
+  <input
+    id="arrival"
+    type="datetime-local"
+    name="arrival"
+    required
+    [(ngModel)]="car.arrival"
+  />
+
+  <button type="button" (click)="onSubmit(form)">Erfassen</button>
+</form>
+}

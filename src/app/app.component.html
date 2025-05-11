@@ -2,7 +2,7 @@
 <nav>
   <ul>
     <li>
-      <a routerLink="" (click)="onNavigateRoute('')">Home</a>
+      <a routerLink="home" (click)="onNavigateRoute('home')">Home</a>
     </li>
     <li>
       <a routerLink="dashboard" (click)="onNavigateRoute('dashboard')"
@@ -11,6 +11,11 @@
     </li>
     <li>
       <a routerLink="house" (click)="onNavigateRoute('house')">Haus</a>
+    </li>
+    <li>
+      <a routerLink="parked-car" (click)="onNavigateRoute('parkedCar')"
+        >Auto erfassen</a
+      >
     </li>
   </ul>
 </nav>
