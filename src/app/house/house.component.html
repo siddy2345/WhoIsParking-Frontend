@@ -11,7 +11,7 @@
     <tr>
       <td>{{ house.street }}</td>
       <td>{{ house.number }}</td>
-      <td class="qr-button-cell">
+      <td class="qr-button-cell" (click)="onSelectHouse(house)">
         <button
           class="qr-button"
           type="button"
@@ -28,7 +28,8 @@
 
 <dialog class="dialog" [open]="openDialog()">
   <qrcode
-    [qrdata]="qrCodeDataSig()"
+    #qrCode
+    [qrdata]="qrCodeData()"
     [allowEmptyString]="true"
     [ariaLabel]="'QR Code image with the following content...'"
     [cssClass]="'center'"
@@ -40,8 +41,10 @@
     [scale]="1"
     [title]="'A custom title attribute'"
     [width]="300"
-    >Download</qrcode
-  >
+  ></qrcode>
 
-  <button (click)="onCloseDialog()">Schliessen</button>
+  <div class="button-group">
+    <button (click)="onCloseDialog()">Schliessen</button>
+    <button (click)="onDownloadPdf(qrCode)">Download PDF</button>
+  </div>
 </dialog>
