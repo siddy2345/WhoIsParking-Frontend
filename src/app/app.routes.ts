@@ -13,6 +13,27 @@ export const routes: Routes = [
     canActivate: [canActivate],
     loadComponent: () =>
       import('./house/house.component').then((m) => m.HouseComponent),
+    children: [
+      {
+        path: '',
+        redirectTo: 'detail',
+        pathMatch: 'full',
+      },
+      {
+        path: 'editor',
+        loadComponent: () =>
+          import('./house/house-editor/house-editor.component').then(
+            (m) => m.HouseEditorComponent
+          ),
+      },
+      {
+        path: 'detail',
+        loadComponent: () =>
+          import('./house/house-detail/house-detail.component').then(
+            (m) => m.HouseDetailComponent
+          ),
+      },
+    ],
   },
   {
     path: 'dashboard',

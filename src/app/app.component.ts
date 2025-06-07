@@ -15,7 +15,6 @@ export class AppComponent {
 
   // set the desired route to navigate to, incase of login retry
   public onNavigateRoute(route: string): void {
-    console.log(route);
     this.authEventService.desiredRouteSig.set(route);
   }
 }
