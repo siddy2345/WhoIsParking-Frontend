@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { BehaviorSubject, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import {
   HouseClient,
   HouseViewModel,
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   private readonly parkedCarService = inject(ParkedCarClient);
 
   public ngOnInit(): void {
-    this.houses$ = this.houseService.housesGetAdmin().pipe(
+    this.houses$ = this.houseService.housesAll().pipe(
       tap((h) =>
         this.searchModel$.next({
           ...this.searchModel$.value,

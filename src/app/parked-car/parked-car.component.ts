@@ -1,4 +1,4 @@
-import { Component, inject, input, Input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import {
@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ParkedCarComponent {
   /** Input from url param */
-  houseId = input<number>();
+  public houseId = input.required<number>();
 
   public parkedCarModel$ = new BehaviorSubject<IParkedCarModel>(
     this.defaultValues

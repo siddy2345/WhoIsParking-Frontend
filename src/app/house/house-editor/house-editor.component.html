@@ -1,1 +1,32 @@
-<p>house-editor works!</p>
+@if (houseModel$ | async; as house) {
+<form #form="ngForm">
+  <label for="city">Stadt</label>
+  <input type="text" name="city" id="city" required [(ngModel)]="house.city" />
+  <label for="street">Strasse</label>
+  <input
+    type="text"
+    name="street"
+    id="street"
+    required
+    [(ngModel)]="house.street"
+  />
+  <label for="number">Hausnummer</label>
+  <input
+    type="text"
+    name="number"
+    id="number"
+    required
+    [(ngModel)]="house.number"
+  />
+  <label for="zip">PLZ</label>
+  <input type="text" name="zip" id="zip" required [(ngModel)]="house.zip" />
+
+  <button
+    type="button"
+    [disabled]="form.invalid"
+    (click)="onSubmit(form, house)"
+  >
+    {{ house.houseId ? "Bearbeiten" : "Erfassen" }}
+  </button>
+</form>
+}

@@ -27,6 +27,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'editor/:houseId',
+        loadComponent: () =>
+          import('./house/house-editor/house-editor.component').then(
+            (m) => m.HouseEditorComponent
+          ),
+      },
+      {
         path: 'detail',
         loadComponent: () =>
           import('./house/house-detail/house-detail.component').then(

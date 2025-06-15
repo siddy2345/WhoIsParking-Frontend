@@ -22,7 +22,7 @@ export const canActivate: CanActivateFn = (
   const router = inject(Router);
   const identityService = inject(IdentityClient);
 
-  return identityService.infoGet().pipe(
+  return identityService.infoGET().pipe(
     map((userInfo) => {
       if (userInfo.email) {
         localStorage.setItem(USER_EMAIL, userInfo.email);

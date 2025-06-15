@@ -4,6 +4,7 @@
       <th>Strasse</th>
       <th>Nummer</th>
       <th>QR Code</th>
+      <th>Aktion</th>
     </tr>
   </thead>
   <tbody>
@@ -11,15 +12,29 @@
     <tr>
       <td>{{ house.street }}</td>
       <td>{{ house.number }}</td>
-      <td class="qr-button-cell" (click)="onSelectHouse(house)">
-        <button
-          class="qr-button"
-          type="button"
-          title="QR Code generieren"
-          (click)="onGenerateQrCode(house.houseId!)"
-        >
-          <span class="icon"><img src="qr_code.svg" /></span>
-        </button>
+      <td (click)="onSelectHouse(house)">
+        <div class="button-cell">
+          <button
+            class="button"
+            type="button"
+            title="QR Code generieren"
+            (click)="onGenerateQrCode(house.houseId!)"
+          >
+            <span class="icon"><img src="qr_code.svg" /></span>
+          </button>
+        </div>
+      </td>
+      <td (click)="onSelectHouse(house)">
+        <div class="button-cell">
+          <button
+            class="button"
+            type="button"
+            title="Haus bearbeiten"
+            (click)="onEditHouse(house.houseId!)"
+          >
+            <span class="icon"><img src="edit.svg" /></span>
+          </button>
+        </div>
       </td>
     </tr>
     }

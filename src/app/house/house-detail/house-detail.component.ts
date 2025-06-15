@@ -9,6 +9,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
 import jsPDF from 'jspdf';
 import { PARKED_CAR_ROUTE } from '../../app.models';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-house-detail',
@@ -24,9 +25,10 @@ export class HouseDetailComponent implements OnInit {
 
   private readonly houseService = inject(HouseClient);
   private readonly renderer = inject(Renderer2);
+  private readonly router = inject(Router);
 
   public ngOnInit(): void {
-    this.houses$ = this.houseService.housesGetAdmin();
+    this.houses$ = this.houseService.housesAll();
   }
 
   public onSelectHouse(house: HouseViewModel): void {
@@ -39,6 +41,10 @@ export class HouseDetailComponent implements OnInit {
     );
     this.openDialog.set(true);
     this.renderer.addClass(document.body, 'dialog-backdrop');
+  }
+
+  public onEditHouse(houseId: number): void {
+    this.router.navigate(['/house/editor', houseId]);
   }
 
   public onCloseDialog(): void {
