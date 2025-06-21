@@ -1,3 +1,5 @@
+@if (!isPasswordForgotten()) {
+
 <form [formGroup]="userReactiveForm" class="form">
   <section>
     <label for="email">Email</label>
@@ -16,16 +18,34 @@
     }
 
     <label for="password">Password</label>
-    <input required id="password" type="password" formControlName="password" />
+    <input
+      required
+      id="password"
+      type="password"
+      formControlName="password"
+      [class.error]="
+        userReactiveForm.controls.password.hasError('pattern') ||
+        userReactiveForm.controls.password.hasError('required')
+      "
+    />
     @if (userReactiveForm.controls.password.hasError('pattern') &&
     !userReactiveForm.controls.password.hasError('required')) {
-    <!-- FIXME: describe password rules -->
-    <p>Bitte ein valides Passwort eingeben</p>
+    <!-- TODO: check rules one by one? -->
+    <div class="password-requirements">
+      <p>Password Anforderungen:</p>
+      <ul>
+        <li>6 Zeichen</li>
+        <li>ein Grossbuchstabe</li>
+        <li>ein Kleinbuchstabe</li>
+        <li>eine Zahl</li>
+        <li>ein nicht-alphanumerisches Zeichen</li>
+      </ul>
+    </div>
     } @if (userReactiveForm.controls.password.hasError('required')) {
     <p>Passwort ist <strong>obligatorisch</strong></p>
     }
   </section>
-  <section>
+  <section class="sign-in-options">
     <label for="register">Account erstellen</label>
     <input
       id="register"
@@ -48,7 +68,61 @@
     @if (accountProcessOptionsSig() === accountProcessOptions.Login) {
     <button (click)="onLogin()">Login</button>
     } @else {
-    <button (click)="onRegister()">Register</button>
+    <button (click)="onRegister()">Registrieren</button>
     }
   </section>
+  <section>
+    <a (click)="onForgotPassword(true)">Passwort vergessen?</a>
+  </section>
 </form>
+} @else {
+
+<form [formGroup]="userReactiveForm" class="form">
+  <section>
+    <label for="email">Email</label>
+    <input
+      required
+      id="email"
+      type="email"
+      placeholder="john.doe@provider.com"
+      formControlName="email"
+    />
+    @if (userReactiveForm.controls.email.hasError('email') &&
+    !userReactiveForm.controls.email.hasError('required')) {
+    <p>Bitte eine valide Email angeben</p>
+    } @if (userReactiveForm.controls.email.hasError('required')) {
+    <p>Email ist <strong>obligatorisch</strong></p>
+    } @if(isResetCodeSent()) {
+
+    <label for="reset-code">Code</label>
+    <input
+      type="text"
+      name="reset-code"
+      id="reset-code"
+      formControlName="resetCode"
+    />
+
+    <label for="password">Password</label>
+    <input required id="password" type="password" formControlName="password" />
+    @if (userReactiveForm.controls.password.hasError('pattern') &&
+    !userReactiveForm.controls.password.hasError('required')) {
+    <!-- FIXME: describe password rules -->
+    <p>Bitte ein valides Passwort eingeben</p>
+    } @if (userReactiveForm.controls.password.hasError('required')) {
+    <p>Passwort ist <strong>obligatorisch</strong></p>
+    } }
+  </section>
+
+  <section>
+    <button (click)="onSendResetCode()">Code anfordern</button>
+    @if (isResetCodeSent()) {
+    <button (click)="onResetPassword()">Bestätigen</button>
+    }
+  </section>
+
+  <section>
+    <a (click)="onForgotPassword(false)">Passwort bekannt?</a>
+  </section>
+</form>
+
+}

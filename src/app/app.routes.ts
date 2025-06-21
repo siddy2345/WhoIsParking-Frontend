@@ -57,6 +57,14 @@ export const routes: Routes = [
         (m) => m.ParkedCarComponent
       ),
   },
+  // {
+  //   path: 'profile',
+  //   canActivate: [canActivate],
+  //   loadComponent: () =>
+  //     import('./user/profile/profile.component').then(
+  //       (m) => m.ProfileComponent
+  //     ),
+  // },
   {
     path: '**',
     loadComponent: () =>

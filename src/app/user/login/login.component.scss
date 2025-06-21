@@ -1,0 +1,14 @@
+.sign-in-options {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.error {
+  border: 1px solid var(--danger) !important;
+}
+
+.password-requirements {
+  font-size: small;
+  color: var(--danger);
+}

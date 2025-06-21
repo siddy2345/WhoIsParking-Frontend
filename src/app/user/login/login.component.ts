@@ -1,12 +1,12 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AccountProcessOption } from './login.model';
 import {
   AccessTokenResponse,
-  API_BASE_URL,
+  ForgotPasswordRequest,
   IdentityClient,
   LoginRequest,
-  RefreshRequest,
   RegisterRequest,
+  ResetPasswordRequest,
 } from '../../services/whoIsParking-api.service';
 import {
   FormControl,
@@ -20,17 +20,16 @@ import {
 } from '../../models/shared.models';
 import { Router } from '@angular/router';
 import { AuthEventService } from '../../services/auth/auth-event.service';
-import { take } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent implements OnInit {
-  protected userReactiveForm = new FormGroup({
+  public userReactiveForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [
       Validators.required,
@@ -38,11 +37,16 @@ export class LoginComponent implements OnInit {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d])(.{6,})$/
       ),
     ]),
+    resetCode: new FormControl(),
   });
 
-  protected accountProcessOptions = AccountProcessOption;
+  public accountProcessOptions = AccountProcessOption;
 
-  protected accountProcessOptionsSig = signal(AccountProcessOption.Login);
+  public accountProcessOptionsSig = signal(AccountProcessOption.Login);
+
+  public isPasswordForgotten = signal(false);
+
+  public isResetCodeSent = signal(false);
 
   private readonly identityService = inject(IdentityClient);
   private readonly authEventService = inject(AuthEventService);
@@ -102,6 +106,50 @@ export class LoginComponent implements OnInit {
     accountProcessOption === AccountProcessOption.Login
       ? this.accountProcessOptionsSig.set(AccountProcessOption.Login)
       : this.accountProcessOptionsSig.set(AccountProcessOption.Register);
+  }
+
+  public onForgotPassword(isForgotten: boolean): void {
+    this.isPasswordForgotten.set(isForgotten);
+  }
+
+  public onSendResetCode(): void {
+    const email = this.userReactiveForm.controls.email.value;
+    if (this.userReactiveForm.valid && typeof email === 'string')
+      this.identityService
+        .forgotPassword(new ForgotPasswordRequest({ email }))
+        .subscribe({
+          next: () => {
+            this.isResetCodeSent.set(true);
+          },
+          error: (err) => {
+            console.log(err); //FIXME: do better
+          },
+        });
+  }
+
+  public onResetPassword(): void {
+    const email = this.userReactiveForm.controls.email.value;
+    const password = this.userReactiveForm.controls.password.value;
+    const resetCode = this.userReactiveForm.controls.resetCode.value;
+    if (
+      this.userReactiveForm.valid &&
+      typeof email === 'string' &&
+      typeof password === 'string' &&
+      typeof resetCode === 'string'
+    )
+      this.identityService
+        .resetPassword(
+          new ResetPasswordRequest({ email, newPassword: password, resetCode })
+        )
+        .subscribe({
+          next: () => {
+            this.isResetCodeSent.set(false);
+            this.isPasswordForgotten.set(false);
+          },
+          error: (err) => {
+            console.log(err); //FIXME: do better
+          },
+        });
   }
 
   private handleTokenResponse(tokenResponse: AccessTokenResponse): void {
