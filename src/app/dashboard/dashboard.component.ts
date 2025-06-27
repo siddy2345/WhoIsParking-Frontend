@@ -18,14 +18,14 @@ import { ParkedCarSearchModelFE } from './dashboard.model';
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  protected searchModel$ = new BehaviorSubject<ParkedCarSearchModelFE>({
+  public searchModel$ = new BehaviorSubject<ParkedCarSearchModelFE>({
     dateFrom: this.getDefaultDateFrom(),
     dateTo: this.getDefaultDateTo(),
   });
 
-  protected houses$?: Observable<HouseViewModel[] | undefined>;
+  public houses$?: Observable<HouseViewModel[] | undefined>;
 
-  protected cars$?: Observable<ParkedCarViewModel[] | undefined>;
+  public cars$?: Observable<ParkedCarViewModel[] | undefined>;
 
   private readonly houseService = inject(HouseClient);
   private readonly parkedCarService = inject(ParkedCarClient);
@@ -41,27 +41,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public getDefaultDateFrom(): string {
-    const currentDate = new Date();
-    const unformattedDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-
-    return this.formatDate(unformattedDate);
-  }
-  public getDefaultDateTo(): string {
-    const currentDate = new Date();
-    const unformattedDate = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0
-    );
-
-    return this.formatDate(unformattedDate);
-  }
-
   public onSearchCars(): void {
     const searchModel = this.searchModel$.value;
     this.cars$ = this.parkedCarService.search(
@@ -73,12 +52,6 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  public formatDate(date: Date): string {
-    const offset = date.getTimezoneOffset();
-    date = new Date(date.getTime() - offset * 60 * 1000);
-    return date.toISOString().split('T')[0];
-  }
-
   public isSearchModelValid(): boolean {
     const searchModel = this.searchModel$.value;
 
@@ -87,5 +60,33 @@ export class DashboardComponent implements OnInit {
       !isNaN(Date.parse(searchModel.dateTo)) &&
       searchModel.houseId !== undefined
     );
+  }
+
+  private getDefaultDateFrom(): string {
+    const currentDate = new Date();
+    const unformattedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1
+    );
+
+    return this.formatDate(unformattedDate);
+  }
+
+  private getDefaultDateTo(): string {
+    const currentDate = new Date();
+    const unformattedDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth() + 1,
+      0
+    );
+
+    return this.formatDate(unformattedDate);
+  }
+
+  private formatDate(date: Date): string {
+    const offset = date.getTimezoneOffset();
+    date = new Date(date.getTime() - offset * 60 * 1000);
+    return date.toISOString().split('T')[0];
   }
 }

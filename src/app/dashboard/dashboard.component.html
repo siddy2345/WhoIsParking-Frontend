@@ -19,6 +19,7 @@
       required
       [(ngModel)]="searchModel.dateTo"
     />
+    <!-- TODO: maybe just month? -->
   </header>
   <header>
     <label for="houses">Haus</label>
@@ -29,6 +30,7 @@
       name="houses"
       id="houses"
     >
+      <!-- TODO: maybe multiselect of houses -->
       @for (house of houses$ | async; track $index) {
       <option [value]="house.houseId">
         {{ house.street }} {{ house.number }}
@@ -48,10 +50,26 @@
   </header>
 </section>
 
-<section class="cars">
-  @for (car of cars$ | async; track $index) {
-  {{ car.numberPlate }} <br />
-  }
+<section>
+  <table>
+    <thead>
+      <tr>
+        <th>Name & Vorname</th>
+        <th>Kennzeichen</th>
+        <th>Marke</th>
+        <th>Ankunft</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (car of (cars$ | async); track $index) {
+      <tr>
+        <td>{{ car.lastname }} {{ car.firstname }}</td>
+        <td>{{ car.numberPlate }}</td>
+        <td>{{ car.carBrand }}</td>
+        <td>{{ car.arrival | date : "dd.MM.yyyy HH:mm" }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
 </section>
-
 }
