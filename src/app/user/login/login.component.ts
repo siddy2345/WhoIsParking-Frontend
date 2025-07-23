@@ -83,21 +83,23 @@ export class LoginComponent implements OnInit {
     const email = this.userReactiveForm.controls.email.value;
     const password = this.userReactiveForm.controls.password.value;
     if (
-      this.userReactiveForm.valid &&
-      typeof email === 'string' &&
-      typeof password === 'string'
+      !this.userReactiveForm.valid ||
+      typeof email !== 'string' ||
+      typeof password !== 'string'
     )
-      this.identityService
-        .login(new LoginRequest({ email, password }))
-        .subscribe({
-          next: (tokenResponse) => {
-            this.handleTokenResponse(tokenResponse);
-            this.router.navigate([this.authEventService.desiredRouteSig()]);
-          },
-          error: (err) => {
-            console.log(err); //FIXME: do better
-          },
-        });
+      return;
+
+    this.identityService
+      .login(new LoginRequest({ email, password }))
+      .subscribe({
+        next: (tokenResponse) => {
+          this.handleTokenResponse(tokenResponse);
+          this.router.navigate([this.authEventService.desiredRouteSig()]);
+        },
+        error: (err) => {
+          console.log(err); //FIXME: do better
+        },
+      });
   }
 
   public onChangeAccProcessOption(

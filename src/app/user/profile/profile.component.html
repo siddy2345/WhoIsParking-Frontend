@@ -1,4 +1,54 @@
-<!-- <form #form="ngForm">
+<form [formGroup]="userReactiveForm">
+  <label for="old-password">Neue Email</label>
+  <input
+    required
+    id="email"
+    type="email"
+    placeholder="john.doe@provider.com"
+    formControlName="email"
+  />
+  @if (userReactiveForm.controls.email.hasError('email') &&
+  !userReactiveForm.controls.email.hasError('required')) {
+  <p>Bitte eine valide Email angeben</p>
+  } @if (userReactiveForm.controls.email.hasError('required')) {
+  <p>Email ist <strong>obligatorisch</strong></p>
+  }
+
   <label for="old-password">Altes Password</label>
-</form> -->
-<!-- FIXME: backend does not have the logic for that (at the moment) -->
+  <input
+    required
+    id="old-password"
+    type="password"
+    formControlName="oldPassword"
+  />
+  <label for="new-password">Neues Password</label>
+  <input
+    required
+    id="new-password"
+    type="password"
+    formControlName="newPassword"
+    [class.error]="
+      userReactiveForm.controls.newPassword.hasError('pattern') ||
+      userReactiveForm.controls.newPassword.hasError('required')
+    "
+  />
+  @if (userReactiveForm.controls.newPassword.hasError('pattern') &&
+  !userReactiveForm.controls.newPassword.hasError('required')) {
+  <!-- TODO: check rules one by one? -->
+  <div class="password-requirements">
+    <p>Password Anforderungen:</p>
+    <ul>
+      <li>6 Zeichen</li>
+      <li>ein Grossbuchstabe</li>
+      <li>ein Kleinbuchstabe</li>
+      <li>eine Zahl</li>
+      <li>ein nicht-alphanumerisches Zeichen</li>
+    </ul>
+  </div>
+  } @if (userReactiveForm.controls.newPassword.hasError('required')) {
+  <p>Passwort ist <strong>obligatorisch</strong></p>
+  }
+  <button (click)="onSubmit()" [disabled]="!userReactiveForm.valid">
+    Bestätigen
+  </button>
+</form>

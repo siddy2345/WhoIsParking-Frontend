@@ -66,9 +66,13 @@
 
   <section>
     @if (accountProcessOptionsSig() === accountProcessOptions.Login) {
-    <button (click)="onLogin()">Login</button>
+    <button (click)="onLogin()" [disabled]="!userReactiveForm.valid">
+      Login
+    </button>
     } @else {
-    <button (click)="onRegister()">Registrieren</button>
+    <button (click)="onRegister()" [disabled]="!userReactiveForm.valid">
+      Registrieren
+    </button>
     }
   </section>
   <section>
